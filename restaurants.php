@@ -15,6 +15,9 @@
 
         $imgUrl = singleImg('logo');
         $restaurant_name = $_POST['restaurant_name'];
+        $telegram_chat_id = $_POST['telegram_chat_id'];
+        $kitchen_receipt = $_POST['kitchen_receipt'];
+        $customer_receipt = $_POST['customer_receipt'];
         $username = $_POST['username'];
         $password = $_POST['password'];
         $sale_date = $_POST['sale_date'];
@@ -46,14 +49,14 @@
 
 
         // Insert Profile
-        $insertNewProfile = sql("INSERT INTO `profiles`(`logo`, `restaurant_name`, `username`, `password`, `sale_date`, `sale_type`, 
+        $insertNewProfile = sql("INSERT INTO `profiles`(`logo`, `restaurant_name`, `telegram_chat_id`, `kitchen_receipt`, `customer_receipt`, `username`, `password`, `sale_date`, `sale_type`, 
     `payment`, `next_payment_date`, `boss_name`, `boss_phone_number`, 
     `production_name`, `production_phone_number`, `region`, 
     `is_contract`, `is_working`, `is_pos`, `is_menu`, `is_tax`, 
     `is_telegram_notify`, `is_whatsapp_notify`, `is_pos_block`, `is_menu_block`,
     `tax_percent`, `tax_merchant`, `tax_type`, `ip_addr`, `port_addr`, `tax_cash_type`
 ) VALUES (
-    '$imgUrl','$restaurant_name','$username','$password','$sale_date','$sale_type',
+    '$imgUrl','$restaurant_name', '$telegram_chat_id', '$kitchen_receipt', '$customer_receipt' '$username','$password','$sale_date','$sale_type',
     '$payment','$next_payment_date','$boss_name','$boss_phone_number',
     '$production_name','$production_phone_number','$region',
     '$is_contract','$is_working','$is_pos','$is_menu','$is_tax',
@@ -90,6 +93,9 @@
         if (isset($_POST['update'])) {
 
             $restaurant_name = $_POST['restaurant_name'];
+            $telegram_chat_id = $_POST['telegram_chat_id'];
+            $kitchen_receipt = $_POST['kitchen_receipt'];
+            $customer_receipt = $_POST['customer_receipt'];
             $username = $_POST['username'];
             $password = $_POST['password'];
             $sale_date = $_POST['sale_date'];
@@ -123,6 +129,9 @@
             $updateSql = sql("UPDATE `profiles` 
     SET 
         `restaurant_name` = '$restaurant_name',
+        `telegram_chat_id` = '$telegram_chat_id',
+        `kitchen_receipt` = '$kitchen_receipt',
+        `customer_receipt` = '$customer_receipt',
         `username` = '$username',
         `password` = '$password',
         `sale_date` = '$sale_date',
@@ -263,6 +272,15 @@
                                                                 </div>
                                                                 <div class="col-12">
                                                                     <div class="form-group has-icon-left mt-2">
+                                                                        <label for="first-name-icon">Telegram Chat Id</label>
+                                                                        <div class="position-relative mt-2">
+                                                                            <input type="text" class="form-control" placeholder="Sizin Cavabınız" id="first-name-icon" name="telegram_chat_id" value="<?= $profiles['telegram_chat_id'] ?? '' ?>">
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    <div class="form-group has-icon-left mt-2">
                                                                         <label for="email-id-icon">Şifrə</label>
                                                                         <div class="position-relative mt-2">
                                                                             <input type="text" class="form-control" placeholder="Sizin Cavabınız" id="email-id-icon" name="password" value="<?= $profiles['password'] ?? '' ?>">
@@ -322,6 +340,7 @@
                                                                     </h5>
                                                                     <hr class="w-25 mx-auto opacity-50">
                                                                 </div>
+                                                                
 
                                                                 <div class="col-12">
                                                                     <div class="form-group has-icon-left mt-2">
@@ -389,6 +408,32 @@
                                                                         <div class="checkbox mt-2">
                                                                             <input type="checkbox" id="is_working" class="form-check-input" value="1" name="is_working" <?= (isset($profiles['is_working']) && $profiles['is_working'] === '1') ? 'checked' : '' ?>>
                                                                             <label for="is_working">Bizimlə Çalışır?</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                  <div class="text-center mt-4">
+                                                                    <h5 class="fw-bold text-primary">
+                                                                        <i class="bi bi-info-circle me-2"></i> Çek Məlumatları
+                                                                    </h5>
+                                                                    <hr class="w-25 mx-auto opacity-50">
+                                                                </div>
+
+                                                                <div class="col-12">
+                                                                    <div class="form-group has-icon-left mt-2">
+                                                                        <label for="first-name-icon">Müştəri çeki ölçüsü</label>
+                                                                        <div class="position-relative mt-2">
+                                                                            <input type="text" class="form-control" placeholder="Sizin Cavabınız" id="first-name-icon" name="customer_receipt" value="<?= $profiles['customer_receipt'] ?? '' ?>">
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                 <div class="col-12">
+                                                                    <div class="form-group has-icon-left mt-2">
+                                                                        <label for="first-name-icon">Mətbəx çeki ölçüsü</label>
+                                                                        <div class="position-relative mt-2">
+                                                                            <input type="text" class="form-control" placeholder="Sizin Cavabınız" id="first-name-icon" name="kitchen_receipt" value="<?= $profiles['kitchen_receipt'] ?? '' ?>">
+
                                                                         </div>
                                                                     </div>
                                                                 </div>
