@@ -39,6 +39,34 @@ if (isset($_GET['d']) && $_GET['d'] !== '') {
   .col-sm-12 {
     padding: 7px;
   }
+  
+  /* Settings page style consistency */
+  .card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 1rem;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    border: none;
+  }
+  
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+  }
+  
+  .pagetitle h1 {
+    color: #1f2937;
+    font-weight: 600;
+  }
+  
+  .table {
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
 </style>
 
 

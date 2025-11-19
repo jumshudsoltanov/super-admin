@@ -42,7 +42,7 @@ function sendTelegramLog($message)
 {
 
     $botToken = "8429736362:AAGR2tah5G7I3rQiQss46QoXVkKVPCML2zY";
-    $chatId   = "7881377885";
+    $chatId   = "-1003106670574";
 
     $url = "https://api.telegram.org/bot" . $botToken . "/sendMessage";
 
