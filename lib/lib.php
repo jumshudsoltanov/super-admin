@@ -38,7 +38,33 @@ function isExpanded($pages, $class = "is-expanded")
     return in_array(currentPage(), $pages) ? $class : "";
 }
 
+function sendTelegramLog($message)
+{
 
+    $botToken = "8429736362:AAGR2tah5G7I3rQiQss46QoXVkKVPCML2zY";
+    $chatId   = "7881377885";
+
+    $url = "https://api.telegram.org/bot" . $botToken . "/sendMessage";
+
+    $data = [
+        'chat_id' => $chatId,
+        'text' => $message,
+        'parse_mode' => 'HTML'
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    // Zəif serverlər üçün timeout (optional)
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return $response;
+}
 function sql($text)
 {
     global $conn;
