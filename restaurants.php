@@ -40,13 +40,14 @@
         $is_menu_block = $_POST['is_menu_block'] ?? 0;
         $terminal_id = $_POST['terminal_id'] ?? 0;
         $terminal_password = $_POST['terminal_code'] ?? 0;
+        $is_master = $_POST['is_master'] ?? 0;
         $tax_percent = $_POST['tax_percent'] ?? 0;
         $tax_merchant = $_POST['tax_merchant'];
         $tax_type = $_POST['tax_type'];
         $tax_cash_type = $_POST['tax_cash_type'];
         $port_addr = $_POST['port_addr'];
         $ip_addr = $_POST['ip_addr'];
-
+        $is_scroll = $_POST['is_scroll'];
 
         // Insert Profile
         $insertNewProfile = sql("INSERT INTO `profiles`(`logo`, `restaurant_name`, `telegram_chat_id`, `kitchen_receipt`, `customer_receipt`, `username`, `password`, `sale_date`, `sale_type`, 
@@ -54,14 +55,14 @@
     `production_name`, `production_phone_number`, `region`, 
     `is_contract`, `is_working`, `is_pos`, `is_menu`, `is_tax`, 
     `is_telegram_notify`, `is_whatsapp_notify`, `is_pos_block`, `is_menu_block`,
-    `tax_percent`, `tax_merchant`, `tax_type`, `ip_addr`, `port_addr`, `tax_cash_type`
+    `tax_percent`, `tax_merchant`, `tax_type`, `ip_addr`, `port_addr`, `tax_cash_type`, `is_scroll`
 ) VALUES (
     '$imgUrl','$restaurant_name', '$telegram_chat_id', '$kitchen_receipt', '$customer_receipt' '$username','$password','$sale_date','$sale_type',
     '$payment','$next_payment_date','$boss_name','$boss_phone_number',
     '$production_name','$production_phone_number','$region',
     '$is_contract','$is_working','$is_pos','$is_menu','$is_tax',
     '$is_telegram_notify','$is_whatsapp_notify','$is_pos_block','$is_menu_block',
-    '$tax_percent','$tax_merchant','$tax_type','$ip_addr','$port_addr','$tax_cash_type'
+    '$tax_percent','$tax_merchant','$tax_type','$ip_addr','$port_addr','$tax_cash_type', '$is_scroll'
 )");
 
         $lastId = $conn->insert_id;
@@ -70,9 +71,9 @@
         if (!empty($terminal_id) && !empty($terminal_password) && count($terminal_id) === count($terminal_password)) {
             foreach ($terminal_id as $i => $terminal) {
                 $password = $terminal_password[$i];
-
-                sql("INSERT INTO terminal_groups (profile_id, terminal_id, terminal_password) 
-                VALUES ('$lastId', '$terminal', '$password')");
+                $master = $is_master[$i];
+                sql("INSERT INTO terminal_groups (profile_id, terminal_id, terminal_password, is_master) 
+                VALUES ('$lastId', '$terminal', '$password', '$master')");
             }
         }
 
@@ -124,10 +125,11 @@
             $tax_cash_type = $_POST['tax_cash_type'];
             $port_addr = $_POST['port_addr'];
             $ip_addr = $_POST['ip_addr'];
-
-
-            $updateSql = sql("UPDATE `profiles` 
-    SET 
+            $is_master = $_POST['is_master'] ?? 0;
+            $is_scroll = $_POST['is_scroll'] ?? 0;
+           
+           $updateSql = sql("UPDATE `profiles` 
+        SET 
         `restaurant_name` = '$restaurant_name',
         `telegram_chat_id` = '$telegram_chat_id',
         `kitchen_receipt` = '$kitchen_receipt',
@@ -157,7 +159,8 @@
         `tax_type` = '$tax_type',
         `tax_cash_type` = '$tax_cash_type',
         `ip_addr` = '$ip_addr',
-        `port_addr` = '$port_addr'
+        `port_addr` = '$port_addr',
+        `is_scroll` = '$is_scroll'
     WHERE id = '$id'
 ");
 
@@ -167,8 +170,9 @@
             if (!empty($terminal_id) && !empty($terminal_password) && count($terminal_id) === count($terminal_password)) {
                 foreach ($terminal_id as $i => $terminal) {
                     $password = $terminal_password[$i];
-                    sql("INSERT INTO terminal_groups (profile_id, terminal_id, terminal_password) 
-                        VALUES ('$id', '$terminal', '$password')");
+                    $master = $is_master[$i];
+                    sql("INSERT INTO terminal_groups (profile_id, terminal_id, terminal_password, is_master) 
+                        VALUES ('$id', '$terminal', '$password', '$master')");
                 }
             }
 
@@ -340,7 +344,7 @@
                                                                     </h5>
                                                                     <hr class="w-25 mx-auto opacity-50">
                                                                 </div>
-                                                                
+
 
                                                                 <div class="col-12">
                                                                     <div class="form-group has-icon-left mt-2">
@@ -412,7 +416,7 @@
                                                                     </div>
                                                                 </div>
 
-                                                                  <div class="text-center mt-4">
+                                                                <div class="text-center mt-4">
                                                                     <h5 class="fw-bold text-primary">
                                                                         <i class="bi bi-info-circle me-2"></i> Çek Məlumatları
                                                                     </h5>
@@ -428,7 +432,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                 <div class="col-12">
+                                                                <div class="col-12">
                                                                     <div class="form-group has-icon-left mt-2">
                                                                         <label for="first-name-icon">Mətbəx çeki ölçüsü</label>
                                                                         <div class="position-relative mt-2">
@@ -461,17 +465,33 @@
                                                                                     <?php foreach ($getTerminals as $key => $value) : ?>
                                                                                         <div class="row g-3 align-items-end mb-2 terminal_item">
 
-                                                                                            <div class="col-md-5 col-12">
+                                                                                            <div class="col-md-4 col-12">
                                                                                                 <label class="form-label">Terminal ID</label>
-                                                                                                <input type="text" class="form-control" placeholder="Terminal ID" name="terminal_id[]" value="<?= $value['terminal_id'] ?? '' ?>" readonly>
+                                                                                                <input type="text" class="form-control" placeholder="Terminal ID" name="terminal_id[]" value="<?= htmlspecialchars($value['terminal_id'] ?? '') ?>" readonly>
                                                                                             </div>
 
-
-                                                                                            <div class="col-md-5 col-12">
+                                                                                            <div class="col-md-4 col-12">
                                                                                                 <label class="form-label">Terminal Kodu</label>
-                                                                                                <input type="text" class="form-control" placeholder="Terminal Kodu" name="terminal_code[]" value="<?= $value['terminal_password'] ?? '' ?>">
+                                                                                                <input type="text" class="form-control" placeholder="Terminal Kodu" name="terminal_code[]" value="<?= htmlspecialchars($value['terminal_password'] ?? '') ?>">
                                                                                             </div>
 
+                                                                                            <!-- Master sahəsi: Bootstrap toggle switch -->
+                                                                                            <div class="col-md-2 col-12">
+                                                                                                <label class="form-label d-block">Master</label>
+
+                                                                                                <div class="form-check form-switch d-inline-block">
+                                                                                                    <input
+                                                                                                        class="form-check-input"
+                                                                                                        type="checkbox"
+                                                                                                        id="terminalMaster<?= $key ?>"
+                                                                                                        name="is_master[]"
+                                                                                                        value="1"
+                                                                                                        <?= (!empty($value['is_master']) && $value['is_master'] == 1) ? 'checked' : '' ?>>
+                                                                                                    <label class="form-check-label" for="terminalMaster<?= $key ?>">
+                                                                                                        <?= (!empty($value['is_master']) && $value['is_master'] == 1) ? 'Bəli' : 'Xeyr' ?>
+                                                                                                    </label>
+                                                                                                </div>
+                                                                                            </div>
 
                                                                                             <div class="col-md-2 col-12 d-flex align-items-end">
                                                                                                 <button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.terminal_item').remove()">
@@ -480,6 +500,7 @@
                                                                                             </div>
                                                                                         </div>
                                                                                     <?php endforeach; ?>
+
 
                                                                                 <?php endif ?>
                                                                             </div>
@@ -623,6 +644,21 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
+                                                                <div class="col-12">
+                                                                    <div class="card">
+                                                                        <div class="card-body">
+                                                                            <h5 class="card-title mb-3">Əlavə funksiyalar</h5>
+                                                                           <div class="row mb-3">
+                                                                                <div class="col-sm-12">
+                                                                                    <div class="form-check form-switch">
+                                                                                        <input class="form-check-input" type="checkbox" id="is_scroll" value="1" name="is_scroll" <?= (isset($profiles['is_scroll']) && $profiles['is_scroll'] === '1') ? 'checked' : '' ?>>
+                                                                                        <label class="form-check-label" for="is_scroll">Scroll</label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                             <div class=" col-12 d-flex justify-content-center mt-5">
                                                                 <button type="submit" name="<?= isset($_GET['e']) ? 'update' : 'send' ?>" value="1" class="btn btn-primary btn-md me-2 mb-1">Göndər</button>
@@ -657,27 +693,37 @@
                         const terminalID = generateTerminalID(); // Yeni ID
 
                         let html = `
-                            <div class="row g-3 align-items-end mb-2 terminal_item">
-                                <!-- Terminal ID -->
-                            <div class="col-md-5 col-12">
-                            <label class="form-label">Terminal ID</label>
-                                <input type="text" class="form-control" placeholder="Terminal ID" name="terminal_id[]" value="${terminalID}" readonly>
-                            </div>
+  <div class="row g-3 align-items-end mb-2 terminal_item">
+      
+      <!-- Terminal ID -->
+      <div class="col-md-4 col-12">
+          <label class="form-label">Terminal ID</label>
+          <input type="text" class="form-control" placeholder="Terminal ID" name="terminal_id[]" value="${terminalID}" readonly>
+      </div>
 
-                    <!-- Terminal Kodu -->
-                <div class="col-md-5 col-12">
-                    <label class="form-label">Terminal Kodu</label>
-                    <input type="text" class="form-control" placeholder="Terminal Kodu" name="terminal_code[]">
-                </div>
+      <!-- Terminal Kodu -->
+      <div class="col-md-4 col-12">
+          <label class="form-label">Terminal Kodu</label>
+          <input type="text" class="form-control" placeholder="Terminal Kodu" name="terminal_code[]">
+      </div>
 
-                <!-- Sil Butonu -->
-                <div class="col-md-2 col-12 d-flex align-items-end">
-                    <button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.terminal_item').remove()">
-                        <i class="bi bi-trash"></i> Sil
-                    </button>
-                </div>
-            </div>
-        `;
+      <!-- Master Switch -->
+      <div class="col-md-2 col-12">
+          <label class="form-label d-block">Master</label>
+          <div class="form-check form-switch d-inline-block">
+              <input class="form-check-input" type="checkbox" name="is_master[]" value="1" id="masterSwitch${Date.now()}">
+              <label class="form-check-label" for="masterSwitch${Date.now()}">Bəli</label>
+          </div>
+      </div>
+
+      <!-- Sil Butonu -->
+      <div class="col-md-2 col-12 d-flex align-items-end">
+          <button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.terminal_item').remove()">
+              <i class="bi bi-trash"></i> Sil
+          </button>
+      </div>
+  </div>
+`;
 
                         terminal_list.innerHTML += html;
                     }
