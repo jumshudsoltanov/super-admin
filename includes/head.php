@@ -22,3 +22,6 @@
 
    <!-- Template Main CSS File -->
    <link href="assets/css/style.css" rel="stylesheet">
+   
+   <!-- Modern Premium CSS - No Gradients -->
+   <link href="assets/css/modern-premium.css" rel="stylesheet">

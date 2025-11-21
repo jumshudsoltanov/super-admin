@@ -3,8 +3,15 @@
      <ul class="sidebar-nav" id="sidebar-nav">
 
          <li class="nav-item">
-             <a class="nav-link <?= isActive('index.php', 'd-flex align-items-center rounded-pill px-3 py-2 bg-primary text-white') ?> <?= isActive('index.php', '', 'collapsed') ?>" href="index.php">
-                 <i class="bi bi-grid <?= isActive('index.php', 'text-white') ?> me-2"></i>
+             <a class="nav-link <?= isActive('dashboard.php', 'd-flex align-items-center rounded-pill px-3 py-2 bg-primary text-white') ?> <?= isActive('dashboard.php', '', 'collapsed') ?>" href="dashboard.php">
+                 <i class="bi bi-speedometer2 <?= isActive('dashboard.php', 'text-white') ?> me-2"></i>
+                 <span>Dashboard</span>
+             </a>
+         </li>
+
+         <li class="nav-item">
+             <a class="nav-link <?= isActive('restaurantslist.php', 'd-flex align-items-center rounded-pill px-3 py-2 bg-primary text-white') ?> <?= isActive('restaurantslist.php', '', 'collapsed') ?>" href="restaurantslist.php">
+                 <i class="bi bi-grid <?= isActive('restaurantslist.php', 'text-white') ?> me-2"></i>
                  <span>Restoranlar Siyahısı</span>
              </a>
          </li>
