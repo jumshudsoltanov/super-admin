@@ -1,11 +1,96 @@
 <?php
-    require_once 'config.php';
-    require_once './lib/lib.php';
+require_once 'config.php';
+require_once './lib/lib.php';
 
-    // Insert
-    if (isset($_POST['send']) && !empty($_POST['send'])) {
+// Insert
+if (isset($_POST['send'])) {
 
-        $imgUrl = singleImg('logo');
+    $imgUrl = singleImg('logo');
+    $restaurant_name = $_POST['restaurant_name'];
+    $telegram_chat_id = $_POST['telegram_chat_id'];
+    $kitchen_receipt = $_POST['kitchen_receipt'];
+    $customer_receipt = $_POST['customer_receipt'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $sale_date = $_POST['sale_date'];
+    $sale_type = $_POST['sale_type'];
+    $payment = $_POST['payment'];
+    $next_payment_date = $_POST['next_payment_date'];
+    $boss_name = $_POST['boss_name'];
+    $boss_phone_number = $_POST['boss_phone_number'];
+    $production_name = $_POST['production_name'];
+    $production_phone_number = $_POST['production_phone_number'];
+    $region = $_POST['region'];
+
+    // Checkboxes & Optional fields (Fixing Warnings)
+    $is_contract = $_POST['is_contract'] ?? 0;
+    $is_working = $_POST['is_working'] ?? 0;
+    $is_pos = $_POST['is_pos'] ?? 0;
+    $is_menu = $_POST['is_menu'] ?? 0;
+    $is_tax = $_POST['is_tax'] ?? 0;
+    $is_telegram_notify = $_POST['is_telegram_notify'] ?? 0;
+    $is_whatsapp_notify = $_POST['is_whatsapp_notify'] ?? 0;
+    $is_pos_block = $_POST['is_pos_block'] ?? 0;
+    $is_menu_block = $_POST['is_menu_block'] ?? 0;
+    $is_scroll = $_POST['is_scroll'] ?? 0;
+
+    $terminal_id = $_POST['terminal_id'] ?? [];
+    $terminal_password = $_POST['terminal_code'] ?? [];
+    $is_master = $_POST['is_master'] ?? [];
+
+    $tax_percent = $_POST['tax_percent'] ?? 0;
+    $tax_merchant = $_POST['tax_merchant'] ?? '';
+    $tax_type = $_POST['tax_type'] ?? '';
+    $tax_cash_type = $_POST['tax_cash_type'] ?? '';
+    $port_addr = $_POST['port_addr'] ?? '';
+    $ip_addr = $_POST['ip_addr'] ?? '';
+
+
+    // Insert Profile (Fixed SQL Syntax Error: added comma before username)
+    $insertNewProfile = sql("INSERT INTO `profiles`(`logo`, `restaurant_name`, `telegram_chat_id`, `kitchen_receipt`, `customer_receipt`, `username`, `password`, `sale_date`, `sale_type`, 
+    `payment`, `next_payment_date`, `boss_name`, `boss_phone_number`, 
+    `production_name`, `production_phone_number`, `region`, 
+    `is_contract`, `is_working`, `is_pos`, `is_menu`, `is_tax`, 
+    `is_telegram_notify`, `is_whatsapp_notify`, `is_pos_block`, `is_menu_block`,
+    `tax_percent`, `tax_merchant`, `tax_type`, `ip_addr`, `port_addr`, `tax_cash_type`, `is_scroll`
+) VALUES (
+    '$imgUrl','$restaurant_name', '$telegram_chat_id', '$kitchen_receipt', '$customer_receipt', '$username','$password','$sale_date','$sale_type',
+    '$payment','$next_payment_date','$boss_name','$boss_phone_number',
+    '$production_name','$production_phone_number','$region',
+    '$is_contract','$is_working','$is_pos','$is_menu','$is_tax',
+    '$is_telegram_notify','$is_whatsapp_notify','$is_pos_block','$is_menu_block',
+    '$tax_percent','$tax_merchant','$tax_type','$ip_addr','$port_addr','$tax_cash_type', '$is_scroll'
+)");
+
+    $lastId = $conn->insert_id;
+
+    //  Insert Terminal
+    if (!empty($terminal_id) && !empty($terminal_password) && count($terminal_id) === count($terminal_password)) {
+        foreach ($terminal_id as $i => $terminal) {
+            $password = $terminal_password[$i];
+            $master = $is_master[$i] ?? 0;
+            sql("INSERT INTO terminal_groups (profile_id, terminal_id, terminal_password, is_master) 
+                VALUES ('$lastId', '$terminal', '$password', '$master')");
+        }
+    }
+
+    header('Location: restaurantslist.php');
+    exit;
+}
+
+
+// Update 
+if (isset($_GET['e']) && !empty($_GET['e'])) {
+    $id = base64_decode($_GET['e']);
+    $profiles = sql("SELECT * FROM profiles WHERE id = $id")[0] ?? null;
+    $getTerminals = sql("SELECT * FROM terminal_groups WHERE profile_id = '$id' ");
+    $logoUrl = $profiles['logo'];
+
+
+
+    if (isset($_POST['update'])) {
+
+        $logo = !empty(singleImg('logo')) ? singleImg('logo') : $logoUrl;
         $restaurant_name = $_POST['restaurant_name'];
         $telegram_chat_id = $_POST['telegram_chat_id'];
         $kitchen_receipt = $_POST['kitchen_receipt'];
@@ -21,8 +106,7 @@
         $production_name = $_POST['production_name'];
         $production_phone_number = $_POST['production_phone_number'];
         $region = $_POST['region'];
-        
-        // Checkboxes & Optional fields (Fixing Warnings)
+
         $is_contract = $_POST['is_contract'] ?? 0;
         $is_working = $_POST['is_working'] ?? 0;
         $is_pos = $_POST['is_pos'] ?? 0;
@@ -33,101 +117,21 @@
         $is_pos_block = $_POST['is_pos_block'] ?? 0;
         $is_menu_block = $_POST['is_menu_block'] ?? 0;
         $is_scroll = $_POST['is_scroll'] ?? 0;
-        
+
         $terminal_id = $_POST['terminal_id'] ?? [];
         $terminal_password = $_POST['terminal_code'] ?? [];
         $is_master = $_POST['is_master'] ?? [];
-        
+
         $tax_percent = $_POST['tax_percent'] ?? 0;
         $tax_merchant = $_POST['tax_merchant'] ?? '';
         $tax_type = $_POST['tax_type'] ?? '';
         $tax_cash_type = $_POST['tax_cash_type'] ?? '';
         $port_addr = $_POST['port_addr'] ?? '';
         $ip_addr = $_POST['ip_addr'] ?? '';
-        
 
-        // Insert Profile (Fixed SQL Syntax Error: added comma before username)
-        $insertNewProfile = sql("INSERT INTO `profiles`(`logo`, `restaurant_name`, `telegram_chat_id`, `kitchen_receipt`, `customer_receipt`, `username`, `password`, `sale_date`, `sale_type`, 
-    `payment`, `next_payment_date`, `boss_name`, `boss_phone_number`, 
-    `production_name`, `production_phone_number`, `region`, 
-    `is_contract`, `is_working`, `is_pos`, `is_menu`, `is_tax`, 
-    `is_telegram_notify`, `is_whatsapp_notify`, `is_pos_block`, `is_menu_block`,
-    `tax_percent`, `tax_merchant`, `tax_type`, `ip_addr`, `port_addr`, `tax_cash_type`, `is_scroll`
-) VALUES (
-    '$imgUrl','$restaurant_name', '$telegram_chat_id', '$kitchen_receipt', '$customer_receipt', '$username','$password','$sale_date','$sale_type',
-    '$payment','$next_payment_date','$boss_name','$boss_phone_number',
-    '$production_name','$production_phone_number','$region',
-    '$is_contract','$is_working','$is_pos','$is_menu','$is_tax',
-    '$is_telegram_notify','$is_whatsapp_notify','$is_pos_block','$is_menu_block',
-    '$tax_percent','$tax_merchant','$tax_type','$ip_addr','$port_addr','$tax_cash_type', '$is_scroll'
-)");
-
-        $lastId = $conn->insert_id;
-
-        //  Insert Terminal
-        if (!empty($terminal_id) && !empty($terminal_password) && count($terminal_id) === count($terminal_password)) {
-            foreach ($terminal_id as $i => $terminal) {
-                $password = $terminal_password[$i];
-                $master = $is_master[$i] ?? 0;
-                sql("INSERT INTO terminal_groups (profile_id, terminal_id, terminal_password, is_master) 
-                VALUES ('$lastId', '$terminal', '$password', '$master')");
-            }
-        }
-
-        header('Location: index.php');
-        exit;
-    }
-
-
-    // Update 
-    if (isset($_GET['e']) && !empty($_GET['e'])) {
-        $id = base64_decode($_GET['e']);
-        $profiles = sql("SELECT * FROM profiles WHERE id = $id")[0] ?? null;
-        $getTerminals = sql("SELECT * FROM terminal_groups WHERE profile_id = '$id' ");
-
-
-        if (isset($_POST['update'])) {
-
-            $restaurant_name = $_POST['restaurant_name'];
-            $telegram_chat_id = $_POST['telegram_chat_id'];
-            $kitchen_receipt = $_POST['kitchen_receipt'];
-            $customer_receipt = $_POST['customer_receipt'];
-            $username = $_POST['username'];
-            $password = $_POST['password'];
-            $sale_date = $_POST['sale_date'];
-            $sale_type = $_POST['sale_type'];
-            $payment = $_POST['payment'];
-            $next_payment_date = $_POST['next_payment_date'];
-            $boss_name = $_POST['boss_name'];
-            $boss_phone_number = $_POST['boss_phone_number'];
-            $production_name = $_POST['production_name'];
-            $production_phone_number = $_POST['production_phone_number'];
-            $region = $_POST['region'];
-            
-            $is_contract = $_POST['is_contract'] ?? 0;
-            $is_working = $_POST['is_working'] ?? 0;
-            $is_pos = $_POST['is_pos'] ?? 0;
-            $is_menu = $_POST['is_menu'] ?? 0;
-            $is_tax = $_POST['is_tax'] ?? 0;
-            $is_telegram_notify = $_POST['is_telegram_notify'] ?? 0;
-            $is_whatsapp_notify = $_POST['is_whatsapp_notify'] ?? 0;
-            $is_pos_block = $_POST['is_pos_block'] ?? 0;
-            $is_menu_block = $_POST['is_menu_block'] ?? 0;
-            $is_scroll = $_POST['is_scroll'] ?? 0;
-            
-            $terminal_id = $_POST['terminal_id'] ?? [];
-            $terminal_password = $_POST['terminal_code'] ?? [];
-            $is_master = $_POST['is_master'] ?? [];
-
-            $tax_percent = $_POST['tax_percent'] ?? 0;
-            $tax_merchant = $_POST['tax_merchant'] ?? '';
-            $tax_type = $_POST['tax_type'] ?? '';
-            $tax_cash_type = $_POST['tax_cash_type'] ?? '';
-            $port_addr = $_POST['port_addr'] ?? '';
-            $ip_addr = $_POST['ip_addr'] ?? '';
-            
-           $updateSql = sql("UPDATE `profiles` 
+        $updateSql = sql("UPDATE `profiles` 
         SET 
+        `logo` = '$logo',
         `restaurant_name` = '$restaurant_name',
         `telegram_chat_id` = '$telegram_chat_id',
         `kitchen_receipt` = '$kitchen_receipt',
@@ -161,20 +165,20 @@
         `is_scroll` = '$is_scroll'
     WHERE id = '$id'");
 
-            sql("DELETE FROM terminal_groups WHERE profile_id='$id' ");
-            if (!empty($terminal_id) && !empty($terminal_password) && count($terminal_id) === count($terminal_password)) {
-                foreach ($terminal_id as $i => $terminal) {
-                    $password = $terminal_password[$i];
-                    $master = $is_master[$i] ?? 0;
-                    sql("INSERT INTO terminal_groups (profile_id, terminal_id, terminal_password, is_master) 
+        sql("DELETE FROM terminal_groups WHERE profile_id='$id' ");
+        if (!empty($terminal_id) && !empty($terminal_password) && count($terminal_id) === count($terminal_password)) {
+            foreach ($terminal_id as $i => $terminal) {
+                $password = $terminal_password[$i];
+                $master = $is_master[$i] ?? 0;
+                sql("INSERT INTO terminal_groups (profile_id, terminal_id, terminal_password, is_master) 
                         VALUES ('$id', '$terminal', '$password', '$master')");
-                }
             }
-
-            header('Location: index.php');
-            exit;
         }
+
+        header('Location: restaurantslist.php');
+        exit;
     }
+}
 ?>
 
 <!DOCTYPE html>
@@ -184,18 +188,62 @@
     <title>Restoran İdarə Et</title>
     <?php require_once './includes/head.php' ?>
     <style>
-       /* Settings page style consistency */
-       .nav-pills .nav-link.active { background: linear-gradient(135deg, #6366f1, #4f46e5); }
-       .card { box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border: none; border-radius: 1rem; }
-       .form-label { font-weight: 600; color: #1f2937; }
-       .btn-primary { background: linear-gradient(135deg, #6366f1, #4f46e5); border: none; }
-       .btn-primary:hover { background: linear-gradient(135deg, #4f46e5, #6366f1); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3); transition: all 0.3s ease; }
-       .form-control:focus, .form-select:focus { border-color: #6366f1; box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25); }
-       .text-primary { color: #6366f1 !important; }
-       .card-title { color: #1f2937; font-weight: 600; }
-       .nav-pills .nav-link { color: #6b7280; transition: all 0.3s ease; }
-       .nav-pills .nav-link:hover { background-color: rgba(99, 102, 241, 0.1); }
-       .form-check-input:checked { background-color: #6366f1; border-color: #6366f1; }
+        /* Settings page style consistency */
+        .nav-pills .nav-link.active {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+        }
+
+        .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 1rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+        }
+
+        .text-primary {
+            color: #6366f1 !important;
+        }
+
+        .card-title {
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .nav-pills .nav-link {
+            color: #6b7280;
+            transition: all 0.3s ease;
+        }
+
+        .nav-pills .nav-link:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+
+        .form-check-input:checked {
+            background-color: #6366f1;
+            border-color: #6366f1;
+        }
     </style>
 </head>
 
@@ -238,7 +286,7 @@
                 <div class="col-lg-9">
                     <form class="form form-vertical" method="post" action="" enctype="multipart/form-data">
                         <div class="tab-content">
-                            
+
                             <div class="tab-pane fade show active" id="company" role="tabpanel">
                                 <div class="card">
                                     <div class="card-body">
@@ -258,7 +306,7 @@
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="password" class="form-label">Şifrə</label>
-                                                <input type="password" class="form-control" id="password" name="password" placeholder="Şifrəni daxil edin" value="<?= $profiles['password'] ?? '' ?>">
+                                                <input type="text" class="form-control" id="password" name="password" placeholder="Şifrəni daxil edin" value="<?= $profiles['password'] ?? '' ?>">
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="telegram_chat_id" class="form-label">Telegram Chat ID</label>
@@ -308,8 +356,12 @@
                                                 <label for="region" class="form-label">Şəhər, Region</label>
                                                 <input type="text" class="form-control" id="region" name="region" placeholder="Şəhər və ya region" value="<?= $profiles['region'] ?? '' ?>">
                                             </div>
-                                            <div class="col-md-6 mb-3"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_contract" name="is_contract" value="1" <?= (isset($profiles['is_contract']) && $profiles['is_contract'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_contract">Müqavilə Var?</label></div></div>
-                                            <div class="col-md-6 mb-3"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_working" name="is_working" value="1" <?= (isset($profiles['is_working']) && $profiles['is_working'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_working">Bizimlə Çalışır?</label></div></div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_contract" name="is_contract" value="1" <?= (isset($profiles['is_contract']) && $profiles['is_contract'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_contract">Müqavilə Var?</label></div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_working" name="is_working" value="1" <?= (isset($profiles['is_working']) && $profiles['is_working'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_working">Bizimlə Çalışır?</label></div>
+                                            </div>
                                         </div>
                                         <div class="row mt-3">
                                             <div class="col-12 d-flex justify-content-end">
@@ -342,7 +394,7 @@
                                             <div class="col-md-12 mt-3">
                                                 <h6 class="text-primary mb-3"><i class="bi bi-hdd-network me-2"></i>Vergi və Şəbəkə Məlumatları</h6>
                                                 <div class="row">
-                                                     <div class="col-md-4 mb-3">
+                                                    <div class="col-md-4 mb-3">
                                                         <label for="tax_percent" class="form-label">Vergi Faizi</label>
                                                         <input type="number" step="0.01" class="form-control" id="tax_percent" name="tax_percent" value="<?= $profiles['tax_percent'] ?? '' ?>">
                                                     </div>
@@ -372,14 +424,30 @@
                                             <div class="col-md-12 mt-3">
                                                 <h6 class="text-primary mb-3"><i class="bi bi-toggles me-2"></i>Sistem Parametrləri</h6>
                                                 <div class="row">
-                                                    <div class="col-md-6 mb-3"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_pos" name="is_pos" value="1" <?= (isset($profiles['is_pos']) && $profiles['is_pos'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_pos">POS Aktivdir?</label></div></div>
-                                                    <div class="col-md-6 mb-3"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_menu" name="is_menu" value="1" <?= (isset($profiles['is_menu']) && $profiles['is_menu'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_menu">Menyu Aktivdir?</label></div></div>
-                                                    <div class="col-md-6 mb-3"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_tax" name="is_tax" value="1" <?= (isset($profiles['is_tax']) && $profiles['is_tax'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_tax">Vergi Aktivdir?</label></div></div>
-                                                    <div class="col-md-6 mb-3"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_scroll" name="is_scroll" value="1" <?= (isset($profiles['is_scroll']) && $profiles['is_scroll'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_scroll">Scroll Aktivdir?</label></div></div>
-                                                    <div class="col-md-6 mb-3"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_telegram_notify" name="is_telegram_notify" value="1" <?= (isset($profiles['is_telegram_notify']) && $profiles['is_telegram_notify'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_telegram_notify">Telegram Bildiriş</label></div></div>
-                                                    <div class="col-md-6 mb-3"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_whatsapp_notify" name="is_whatsapp_notify" value="1" <?= (isset($profiles['is_whatsapp_notify']) && $profiles['is_whatsapp_notify'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_whatsapp_notify">WhatsApp Bildiriş</label></div></div>
-                                                    <div class="col-md-6 mb-3"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_pos_block" name="is_pos_block" value="1" <?= (isset($profiles['is_pos_block']) && $profiles['is_pos_block'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_pos_block">POS Blok?</label></div></div>
-                                                    <div class="col-md-6 mb-3"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_menu_block" name="is_menu_block" value="1" <?= (isset($profiles['is_menu_block']) && $profiles['is_menu_block'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_menu_block">Menyu Blok?</label></div></div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_pos" name="is_pos" value="1" <?= (isset($profiles['is_pos']) && $profiles['is_pos'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_pos">POS Aktivdir?</label></div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_menu" name="is_menu" value="1" <?= (isset($profiles['is_menu']) && $profiles['is_menu'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_menu">Menyu Aktivdir?</label></div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_tax" name="is_tax" value="1" <?= (isset($profiles['is_tax']) && $profiles['is_tax'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_tax">Vergi Aktivdir?</label></div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_scroll" name="is_scroll" value="1" <?= (isset($profiles['is_scroll']) && $profiles['is_scroll'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_scroll">Scroll Aktivdir?</label></div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_telegram_notify" name="is_telegram_notify" value="1" <?= (isset($profiles['is_telegram_notify']) && $profiles['is_telegram_notify'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_telegram_notify">Telegram Bildiriş</label></div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_whatsapp_notify" name="is_whatsapp_notify" value="1" <?= (isset($profiles['is_whatsapp_notify']) && $profiles['is_whatsapp_notify'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_whatsapp_notify">WhatsApp Bildiriş</label></div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_pos_block" name="is_pos_block" value="1" <?= (isset($profiles['is_pos_block']) && $profiles['is_pos_block'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_pos_block">POS Blok?</label></div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_menu_block" name="is_menu_block" value="1" <?= (isset($profiles['is_menu_block']) && $profiles['is_menu_block'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_menu_block">Menyu Blok?</label></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -400,4 +468,5 @@
     </main>
     <?php require_once './includes/footer.php' ?>
 </body>
+
 </html>

@@ -19,7 +19,7 @@ if (isset($_GET['d']) && $_GET['d'] !== '') {
 
   sql("DELETE FROM profiles WHERE id = '$id'");
 
-  header('Location: index.php');
+  header('Location: restaurantslist.php');
   exit;
 }
 
@@ -419,6 +419,7 @@ if (isset($_GET['d']) && $_GET['d'] !== '') {
                 <thead>
                   <tr>
                     <th>ID</th>
+                    <th>Logo</th>
                     <th>İstifadəçi Adı</th>
                     <th>Bizimlə Çalışır</th>
                     <th>Yaranma Tarixi</th>
@@ -436,12 +437,20 @@ if (isset($_GET['d']) && $_GET['d'] !== '') {
                   <?php foreach ($profiles as $profile) : ?>
                     <tr>
                       <td><?= $profile['id'] ?></td>
+                      <?php if($profile['logo'] !== ''): ?>
                       <td>
-                        <span class="badge bg-primary">
+                        <img src="../<?= $profile['logo'] ?>" alt="" width="70px" height="70px"> 
+                      </td>
+                      <?php else: ?>
+                      <td></td>
+                      <?php endif ?>
+                      <td>
+                        <s
+                        n class="badge bg-primary">
                           <a href="restaurants.php?id=<?= $profile['id'] ?>" class="text-white text-decoration-none">
                             <?= htmlspecialchars($profile['username']) ?>
                           </a>
-                        </span>
+                        </s>
                       </td>
                       <td>
                         <span class="badge bg-<?= $profile['is_working'] ? 'success' : 'danger'  ?>">
@@ -465,7 +474,7 @@ if (isset($_GET['d']) && $_GET['d'] !== '') {
                         </a>
                       </td>
                       <td>
-                        <a href="index.php?d=<?= base64_encode($profile['id']) ?>" class="btn btn-danger btn-sm">
+                        <a href="restaurantslist.php?d=<?= base64_encode($profile['id']) ?>" class="btn btn-danger btn-sm">
                           <i class="bi bi-trash"></i>
                         </a>
                       </td>

@@ -10,8 +10,8 @@
          </li>
 
          <li class="nav-item">
-             <a class="nav-link <?= isActive('restaurantslist.php', 'd-flex align-items-center rounded-pill px-3 py-2 bg-primary text-white') ?> <?= isActive('restaurantslist.php', '', 'collapsed') ?>" href="restaurantslist.php">
-                 <i class="bi bi-grid <?= isActive('restaurantslist.php', 'text-white') ?> me-2"></i>
+             <a class="nav-link <?= isActive(['restaurantslist.php','restaurants.php'], 'd-flex align-items-center rounded-pill px-3 py-2 bg-primary text-white') ?> <?= isActive('restaurantslist.php', '', 'collapsed') ?>" href="restaurantslist.php">
+                 <i class="bi bi-grid <?= isActive(['restaurantslist.php','restaurants.php'], 'text-white') ?> me-2"></i>
                  <span>Restoranlar Siyahısı</span>
              </a>
          </li>
