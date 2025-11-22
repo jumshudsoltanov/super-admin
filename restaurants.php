@@ -274,6 +274,11 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
+                                    <button class="nav-link w-100 text-start mb-2" id="terminal-tab" data-bs-toggle="pill" data-bs-target="#terminal" type="button">
+                                        <i class="bi bi-display-fill"></i> Terminallar siyahısı
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
                                     <button class="nav-link w-100 text-start" id="additional-tab" data-bs-toggle="pill" data-bs-target="#additional" type="button">
                                         <i class="bi bi-gear me-2"></i> Əlavə Detallar
                                     </button>
@@ -458,15 +463,134 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
 
-                        </div>
+                            <div class="tab-pane fade" id="terminal" role="tabpanel">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="bi bi-display-fill"></i> Terminallar siyahısı</h5>
+
+                                        <div class="col-12">
+                                            <div class="card shadow border-0 rounded-3">
+                                                <div class="card-header d-flex flex-wrap justify-content-between align-items-center bg-white border-0 pb-0">
+                                                    <h4 class="card-title mb-0 text-primary fw-bold">Terminallar</h4>
+                                                    <button type="button" class="btn btn-sm btn-outline-primary btn-md mt-2 mt-md-0" onclick="addForm(this)">
+                                                        <i class="bi bi-plus-circle me-1"></i> Əlavə Et
+                                                    </button>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row g-3 mb-2 mt-2" id="terminal_list">
+                                                        <?php if (isset($_GET['e']) && !empty($_GET['e'])): ?>
+
+                                                            <?php foreach ($getTerminals as $key => $value) : ?>
+                                                                <div class="row g-3 align-items-end mb-2 terminal_item">
+
+                                                                    <div class="col-md-4 col-12">
+                                                                        <label class="form-label">Terminal ID</label>
+                                                                        <input type="text" class="form-control" placeholder="Terminal ID" name="terminal_id[]" value="<?= htmlspecialchars($value['terminal_id'] ?? '') ?>" readonly>
+                                                                    </div>
+
+                                                                    <div class="col-md-4 col-12">
+                                                                        <label class="form-label">Terminal Kodu</label>
+                                                                        <input type="text" class="form-control" placeholder="Terminal Kodu" name="terminal_code[]" value="<?= htmlspecialchars($value['terminal_password'] ?? '') ?>">
+                                                                    </div>
+
+                                                                    <!-- Master sahəsi: Bootstrap toggle switch -->
+                                                                    <div class="col-md-2 col-12">
+                                                                        <label class="form-label d-block">Master</label>
+
+                                                                        <div class="form-check form-switch d-inline-block">
+                                                                            <input
+                                                                                class="form-check-input"
+                                                                                type="checkbox"
+                                                                                id="terminalMaster<?= $key ?>"
+                                                                                name="is_master[]"
+                                                                                value="1"
+                                                                                <?= (!empty($value['is_master']) && $value['is_master'] == 1) ? 'checked' : '' ?>>
+                                                                            <label class="form-check-label" for="terminalMaster<?= $key ?>">
+                                                                                <?= (!empty($value['is_master']) && $value['is_master'] == 1) ? 'Bəli' : 'Xeyr' ?>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-2 col-12 d-flex align-items-end">
+                                                                        <button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.terminal_item').remove()">
+                                                                            <i class="bi bi-trash"></i> Sil
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            <?php endforeach; ?>
+
+
+                                                        <?php endif ?>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-12 d-flex justify-content-end">
+                                                    <button type="submit" name="<?= isset($_GET['e']) ? 'update' : 'send' ?>" class="btn btn-primary"><i class="bi bi-check-circle me-2"></i>Yadda Saxla</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                     </form>
                 </div>
             </div>
         </section>
     </main>
     <?php require_once './includes/footer.php' ?>
+
+    <script>
+        function generateTerminalID() {
+            return Math.floor(10000000 + Math.random() * 90000000);
+        }
+
+        function addForm() {
+            const terminal_list = document.getElementById('terminal_list');
+            const terminalID = generateTerminalID(); // Yeni ID
+
+            let html = `
+  <div class="row g-3 align-items-end mb-2 terminal_item">
+      
+      <!-- Terminal ID -->
+      <div class="col-md-4 col-12">
+          <label class="form-label">Terminal ID</label>
+          <input type="text" class="form-control" placeholder="Terminal ID" name="terminal_id[]" value="${terminalID}" readonly>
+      </div>
+
+      <!-- Terminal Kodu -->
+      <div class="col-md-4 col-12">
+          <label class="form-label">Terminal Kodu</label>
+          <input type="text" class="form-control" placeholder="Terminal Kodu" name="terminal_code[]">
+      </div>
+
+      <!-- Master Switch -->
+      <div class="col-md-2 col-12">
+          <label class="form-label d-block">Master</label>
+          <div class="form-check form-switch d-inline-block">
+              <input class="form-check-input" type="checkbox" name="is_master[]" value="1" id="masterSwitch${Date.now()}">
+              <label class="form-check-label" for="masterSwitch${Date.now()}">Bəli</label>
+          </div>
+      </div>
+
+      <!-- Sil Butonu -->
+      <div class="col-md-2 col-12 d-flex align-items-end">
+          <button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.terminal_item').remove()">
+              <i class="bi bi-trash"></i> Sil
+          </button>
+      </div>
+  </div>
+`;
+
+            terminal_list.innerHTML += html;
+        }
+    </script>
+
 </body>
 
 </html>
