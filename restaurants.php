@@ -396,35 +396,55 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-12 mt-3">
-                                                <h6 class="text-primary mb-3"><i class="bi bi-hdd-network me-2"></i>Vergi və Şəbəkə Məlumatları</h6>
-                                                <div class="row">
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="tax_percent" class="form-label">Vergi Faizi</label>
-                                                        <input type="number" step="0.01" class="form-control" id="tax_percent" name="tax_percent" value="<?= $profiles['tax_percent'] ?? '' ?>">
-                                                    </div>
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="tax_merchant" class="form-label">Vergi Merchant</label>
-                                                        <input type="text" class="form-control" id="tax_merchant" name="tax_merchant" value="<?= $profiles['tax_merchant'] ?? '' ?>">
-                                                    </div>
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="tax_type" class="form-label">Vergi Tipi</label>
-                                                        <input type="text" class="form-control" id="tax_type" name="tax_type" value="<?= $profiles['tax_type'] ?? '' ?>">
-                                                    </div>
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="tax_cash_type" class="form-label">Kassa Tipi</label>
-                                                        <input type="text" class="form-control" id="tax_cash_type" name="tax_cash_type" value="<?= $profiles['tax_cash_type'] ?? '' ?>">
-                                                    </div>
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="ip_addr" class="form-label">IP Ünvan</label>
-                                                        <input type="text" class="form-control" id="ip_addr" name="ip_addr" value="<?= $profiles['ip_addr'] ?? '' ?>">
-                                                    </div>
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="port_addr" class="form-label">Port</label>
-                                                        <input type="text" class="form-control" id="port_addr" name="port_addr" value="<?= $profiles['port_addr'] ?? '' ?>">
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <div class="col-12 mt-3">
+    <h6 class="text-primary mb-3"><i class="bi bi-hdd-network me-2"></i>Vergi və Şəbəkə Məlumatları</h6>
+    
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label for="tax_cash_type" class="form-label">Vergi inteqrasiyası</label>
+            <select class="form-select" id="tax_cash_type" name="tax_cash_type">
+                <option value="" selected>-- Birini Seçin --</option>
+                <option value="azsmart" <?= ($profiles['tax_cash_type'] ?? '') == 'azsmart' ? "selected" : '' ?>>Azsmart</option>
+                <option value="omnitech" <?= ($profiles['tax_cash_type'] ?? '') == 'omnitech' ? "selected" : '' ?>>Omnitech</option>
+                <option value="sunmi" <?= ($profiles['tax_cash_type'] ?? '') == 'sunmi' ? "selected" : '' ?>>Sunmi</option>
+                <option value="nba" <?= ($profiles['tax_cash_type'] ?? '') == 'nba' ? "selected" : '' ?>>Nba</option>
+                <option value="vizar" <?= ($profiles['tax_cash_type'] ?? '') == 'vizar' ? "selected" : '' ?>>Vizar</option>
+            </select>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="tax_percent" class="form-label">Vergi faizi</label>
+            <div class="input-group">
+                <span class="input-group-text">%</span>
+                <input type="text" class="form-control" id="tax_percent" name="tax_percent" value="<?= $profiles['tax_percent'] ?? '' ?>">
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="tax_merchant" class="form-label">Vergi Merchant ID</label>
+            <div class="input-group">
+                <span class="input-group-text">ID</span>
+                <input type="text" class="form-control" id="tax_merchant" name="tax_merchant" value="<?= $profiles['tax_merchant'] ?? '' ?>">
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="tax_type" class="form-label">Vergi Növü</label>
+            <input type="text" class="form-control" id="tax_type" name="tax_type" value="<?= $profiles['tax_type'] ?? '' ?>">
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="ip_addr" class="form-label">Kassa IP</label>
+            <input type="text" class="form-control" id="ip_addr" name="ip_addr" value="<?= $profiles['ip_addr'] ?? '' ?>">
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="port_addr" class="form-label">Kassa Port</label>
+            <input type="text" class="form-control" id="port_addr" name="port_addr" value="<?= $profiles['port_addr'] ?? '' ?>">
+        </div>
+
+        
+    </div>
+</div>
 
                                             <div class="col-md-12 mt-3">
                                                 <h6 class="text-primary mb-3"><i class="bi bi-toggles me-2"></i>Sistem Parametrləri</h6>
