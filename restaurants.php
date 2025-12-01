@@ -21,6 +21,8 @@ if (isset($_POST['send'])) {
     $production_name = $_POST['production_name'];
     $production_phone_number = $_POST['production_phone_number'];
     $region = $_POST['region'];
+    $start_time = $_POST['start_time'];
+    $end_time = $_POST['end_time'];
 
     // Checkboxes & Optional fields (Fixing Warnings)
     $is_contract = $_POST['is_contract'] ?? 0;
@@ -49,7 +51,7 @@ if (isset($_POST['send'])) {
     // Insert Profile (Fixed SQL Syntax Error: added comma before username)
     $insertNewProfile = sql("INSERT INTO `profiles`(`logo`, `restaurant_name`, `telegram_chat_id`, `kitchen_receipt`, `customer_receipt`, `username`, `password`, `sale_date`, `sale_type`, 
     `payment`, `next_payment_date`, `boss_name`, `boss_phone_number`, 
-    `production_name`, `production_phone_number`, `region`, 
+    `production_name`, `production_phone_number`, `region`, `start_time`, `end_time`,
     `is_contract`, `is_working`, `is_pos`, `is_menu`, `is_tax`, 
     `is_telegram_notify`, `is_whatsapp_notify`, `is_pos_block`, `is_menu_block`,
     `tax_percent`, `tax_merchant`, `tax_type`, `ip_addr`, `port_addr`, `tax_cash_type`, `is_scroll`
@@ -57,6 +59,7 @@ if (isset($_POST['send'])) {
     '$imgUrl','$restaurant_name', '$telegram_chat_id', '$kitchen_receipt', '$customer_receipt', '$username','$password','$sale_date','$sale_type',
     '$payment','$next_payment_date','$boss_name','$boss_phone_number',
     '$production_name','$production_phone_number','$region',
+    '$start_time', '$end_time',
     '$is_contract','$is_working','$is_pos','$is_menu','$is_tax',
     '$is_telegram_notify','$is_whatsapp_notify','$is_pos_block','$is_menu_block',
     '$tax_percent','$tax_merchant','$tax_type','$ip_addr','$port_addr','$tax_cash_type', '$is_scroll'
@@ -106,6 +109,8 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
         $production_name = $_POST['production_name'];
         $production_phone_number = $_POST['production_phone_number'];
         $region = $_POST['region'];
+        $start_time = $_POST['start_time'];
+        $end_time = $_POST['end_time'];
 
         $is_contract = $_POST['is_contract'] ?? 0;
         $is_working = $_POST['is_working'] ?? 0;
@@ -147,6 +152,8 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
         `production_name` = '$production_name',
         `production_phone_number` = '$production_phone_number',
         `region` = '$region',
+        `start_time` = '$start_time',
+        `end_time` = '$end_time',
         `is_contract` = '$is_contract',
         `is_working` = '$is_working',
         `is_pos` = '$is_pos',
@@ -360,6 +367,14 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
                                             <div class="col-md-12 mb-3">
                                                 <label for="region" class="form-label">Şəhər, Region</label>
                                                 <input type="text" class="form-control" id="region" name="region" placeholder="Şəhər və ya region" value="<?= $profiles['region'] ?? '' ?>">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="start_time" class="form-label">Başlama Vaxtı</label>
+                                                <input type="time" class="form-control" id="start_time" name="start_time" value="<?= $profiles['start_time'] ?? '' ?>">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="end_time" class="form-label">Bitmə Vaxtı</label>
+                                                <input type="time" class="form-control" id="end_time" name="end_time" value="<?= $profiles['end_time'] ?? '' ?>">
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_contract" name="is_contract" value="1" <?= (isset($profiles['is_contract']) && $profiles['is_contract'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_contract">Müqavilə Var?</label></div>
