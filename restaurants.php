@@ -35,6 +35,7 @@ if (isset($_POST['send'])) {
     $is_pos_block = $_POST['is_pos_block'] ?? 0;
     $is_menu_block = $_POST['is_menu_block'] ?? 0;
     $is_scroll = $_POST['is_scroll'] ?? 0;
+    $is_timer = $_POST['is_timer'] ?? 0;
 
     $terminal_id = $_POST['terminal_id'] ?? [];
     $terminal_password = $_POST['terminal_code'] ?? [];
@@ -54,7 +55,7 @@ if (isset($_POST['send'])) {
     `production_name`, `production_phone_number`, `region`, `start_time`, `end_time`,
     `is_contract`, `is_working`, `is_pos`, `is_menu`, `is_tax`, 
     `is_telegram_notify`, `is_whatsapp_notify`, `is_pos_block`, `is_menu_block`,
-    `tax_percent`, `tax_merchant`, `tax_type`, `ip_addr`, `port_addr`, `tax_cash_type`, `is_scroll`
+    `tax_percent`, `tax_merchant`, `tax_type`, `ip_addr`, `port_addr`, `tax_cash_type`, `is_scroll`, `is_timer`
 ) VALUES (
     '$imgUrl','$restaurant_name', '$telegram_chat_id', '$kitchen_receipt', '$customer_receipt', '$username','$password','$sale_date','$sale_type',
     '$payment','$next_payment_date','$boss_name','$boss_phone_number',
@@ -62,7 +63,7 @@ if (isset($_POST['send'])) {
     '$start_time', '$end_time',
     '$is_contract','$is_working','$is_pos','$is_menu','$is_tax',
     '$is_telegram_notify','$is_whatsapp_notify','$is_pos_block','$is_menu_block',
-    '$tax_percent','$tax_merchant','$tax_type','$ip_addr','$port_addr','$tax_cash_type', '$is_scroll'
+    '$tax_percent','$tax_merchant','$tax_type','$ip_addr','$port_addr','$tax_cash_type', '$is_scroll', '$is_timer'
 )");
 
     $lastId = $conn->insert_id;
@@ -122,6 +123,7 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
         $is_pos_block = $_POST['is_pos_block'] ?? 0;
         $is_menu_block = $_POST['is_menu_block'] ?? 0;
         $is_scroll = $_POST['is_scroll'] ?? 0;
+        $is_timer = $_POST['is_timer'] ?? 0;
 
         $terminal_id = $_POST['terminal_id'] ?? [];
         $terminal_password = $_POST['terminal_code'] ?? [];
@@ -169,7 +171,8 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
         `tax_cash_type` = '$tax_cash_type',
         `ip_addr` = '$ip_addr',
         `port_addr` = '$port_addr',
-        `is_scroll` = '$is_scroll'
+        `is_scroll` = '$is_scroll',
+        `is_timer` = '$is_timer'
     WHERE id = '$id'");
 
         sql("DELETE FROM terminal_groups WHERE profile_id='$id' ");
@@ -487,6 +490,9 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
                                                     </div>
                                                     <div class="col-md-6 mb-3">
                                                         <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_menu_block" name="is_menu_block" value="1" <?= (isset($profiles['is_menu_block']) && $profiles['is_menu_block'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_menu_block">Menyu Blok?</label></div>
+                                                    </div>
+                                                     <div class="col-md-6 mb-3">
+                                                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_timer" name="is_timer" value="1" <?= (isset($profiles['is_timer']) && $profiles['is_timer'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_tax">Timer Aktivdir?</label></div>
                                                     </div>
                                                 </div>
                                             </div>
