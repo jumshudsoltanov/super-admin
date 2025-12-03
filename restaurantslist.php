@@ -429,6 +429,7 @@ if (isset($_GET['d']) && $_GET['d'] !== '') {
                     <th>Satış Tipi</th>
                     <th>Ödəniş</th>
                     <th>Pos</th>
+                    <th>QR</th>
                     <th>Redaktə</th>
                     <th>Sil</th>
                   </tr>
@@ -467,6 +468,11 @@ if (isset($_GET['d']) && $_GET['d'] !== '') {
                         <span class="badge bg-<?= $profile['is_pos'] ? 'success' : 'danger'  ?>">
                           <?= htmlspecialchars($profile['is_pos'] ? 'Aktiv' : 'Deaktiv') ?>
                         </span>
+                      </td>
+                      <td>
+                        <a href="qr_generator.php?id=<?= $profile['id'] ?>" class="btn btn-info btn-sm text-white">
+                          <i class="bi bi-qr-code"></i>
+                        </a>
                       </td>
                       <td>
                         <a href="restaurants.php?e=<?= base64_encode($profile['id']) ?>" class="btn btn-primary btn-sm">
