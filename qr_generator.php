@@ -33,7 +33,7 @@ $menuUrl = "https://qr.tamteam.net/?r=" . $profile['username'];
   <?php require_once './includes/head.php' ?>
   <!-- QR Code Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <style>
+    <style>
     .qr-container {
         display: flex;
         flex-direction: column;
@@ -46,13 +46,32 @@ $menuUrl = "https://qr.tamteam.net/?r=" . $profile['username'];
         max-width: 500px;
         margin: 0 auto;
     }
-    #qrcode {
-        margin: 20px 0;
+    .qr-wrapper {
+        position: relative;
+        display: inline-block;
         padding: 10px;
         background: white;
+        border-radius: 8px;
+    }
+    #qrcode {
+        margin: 0;
     }
     #qrcode img {
         margin: 0 auto;
+        display: block;
+    }
+    .qr-logo-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60px;
+        height: 60px;
+        background: white;
+        padding: 4px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        object-fit: contain;
     }
     .print-btn {
         background: linear-gradient(135deg, #6366f1, #4f46e5);
@@ -72,16 +91,17 @@ $menuUrl = "https://qr.tamteam.net/?r=" . $profile['username'];
         body * {
             visibility: hidden;
         }
-        #qrcode, #qrcode * {
+        .qr-wrapper, .qr-wrapper * {
             visibility: visible;
         }
-        #qrcode {
+        .qr-wrapper {
             position: absolute;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
             margin: 0;
             padding: 0;
+            border: none;
         }
     }
   </style>
@@ -111,11 +131,12 @@ $menuUrl = "https://qr.tamteam.net/?r=" . $profile['username'];
             <div class="qr-container">
                 <h3 class="text-center mb-3"><?= htmlspecialchars($profile['restaurant_name']) ?></h3>
                 
-                <?php if($profile['logo'] !== ''): ?>
-                    <img src="../<?= $profile['logo'] ?>" alt="Logo" style="max-height: 80px; margin-bottom: 1rem;">
-                <?php endif; ?>
-
-                <div id="qrcode"></div>
+                <div class="qr-wrapper">
+                    <div id="qrcode"></div>
+                    <?php if($profile['logo'] !== ''): ?>
+                        <img src="../<?= $profile['logo'] ?>" class="qr-logo-overlay" alt="Logo">
+                    <?php endif; ?>
+                </div>
                 
                 <p class="text-muted mt-3 text-center small"><?= $menuUrl ?></p>
 
