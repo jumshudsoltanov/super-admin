@@ -5,7 +5,7 @@ require_once './lib/lib.php';
 // Insert
 if (isset($_POST['send'])) {
 
-    $imgUrl = singleImg('logo');
+    $imgUrl = singleImg('super_admin_logo');
     $restaurant_name = $_POST['restaurant_name'];
     $telegram_chat_id = $_POST['telegram_chat_id'];
     $kitchen_receipt = $_POST['kitchen_receipt'];
@@ -50,7 +50,7 @@ if (isset($_POST['send'])) {
 
 
     // Insert Profile (Fixed SQL Syntax Error: added comma before username)
-    $insertNewProfile = sql("INSERT INTO `profiles`(`logo`, `restaurant_name`, `telegram_chat_id`, `kitchen_receipt`, `customer_receipt`, `username`, `password`, `sale_date`, `sale_type`, 
+    $insertNewProfile = sql("INSERT INTO `profiles`(`super_admin_logo`, `restaurant_name`, `telegram_chat_id`, `kitchen_receipt`, `customer_receipt`, `username`, `password`, `sale_date`, `sale_type`, 
     `payment`, `next_payment_date`, `boss_name`, `boss_phone_number`, 
     `production_name`, `production_phone_number`, `region`, `start_time`, `end_time`,
     `is_contract`, `is_working`, `is_pos`, `is_menu`, `is_tax`, 
@@ -88,13 +88,13 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
     $id = base64_decode($_GET['e']);
     $profiles = sql("SELECT * FROM profiles WHERE id = $id")[0] ?? null;
     $getTerminals = sql("SELECT * FROM terminal_groups WHERE profile_id = '$id' ");
-    $logoUrl = $profiles['logo'];
+    $logoUrl = $profiles['super_admin_logo'];
 
 
 
     if (isset($_POST['update'])) {
 
-        $logo = !empty(singleImg('logo')) ? singleImg('logo') : $logoUrl;
+        $super_admin_logo = !empty(singleImg('super_admin_logo')) ? singleImg('super_admin_logo') : $logoUrl;
         $restaurant_name = $_POST['restaurant_name'];
         $telegram_chat_id = $_POST['telegram_chat_id'];
         $kitchen_receipt = $_POST['kitchen_receipt'];
@@ -138,7 +138,7 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
 
         $updateSql = sql("UPDATE `profiles` 
         SET 
-        `logo` = '$logo',
+        `super_admin_logo` = '$super_admin_logo',
         `restaurant_name` = '$restaurant_name',
         `telegram_chat_id` = '$telegram_chat_id',
         `kitchen_receipt` = '$kitchen_receipt',
@@ -321,7 +321,12 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="password" class="form-label">Şifrə</label>
-                                                <input type="text" class="form-control" id="password" name="password" placeholder="Şifrəni daxil edin" value="<?= $profiles['password'] ?? '' ?>">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="password" name="password" placeholder="Şifrəni daxil edin" value="<?= $profiles['password'] ?? '' ?>">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="generatePassword()">
+                                                        <i class="bi bi-magic"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="telegram_chat_id" class="form-label">Telegram Chat ID</label>
@@ -629,6 +634,14 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
 `;
 
             terminal_list.innerHTML += html;
+        }
+        function generatePassword() {
+            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let password = "";
+            for (let i = 0; i < 8; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById("password").value = password;
         }
     </script>
 

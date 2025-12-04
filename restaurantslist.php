@@ -440,7 +440,7 @@ if (isset($_GET['d']) && $_GET['d'] !== '') {
                       <td><?= $profile['id'] ?></td>
                       <?php if($profile['logo'] !== ''): ?>
                       <td>
-                        <img src="../<?= $profile['logo'] ?>" alt="" width="70px" height="70px"> 
+                        <img src="./<?= $profile['logo'] ?>" alt="" width="70px" height="70px"> 
                       </td>
                       <?php else: ?>
                       <td></td>
@@ -470,9 +470,11 @@ if (isset($_GET['d']) && $_GET['d'] !== '') {
                         </span>
                       </td>
                       <td>
+                        <?php if($profile['is_menu']): ?>
                         <a href="qr_generator.php?id=<?= $profile['id'] ?>" class="btn btn-info btn-sm text-white">
                           <i class="bi bi-qr-code"></i>
                         </a>
+                        <?php endif; ?>
                       </td>
                       <td>
                         <a href="restaurants.php?e=<?= base64_encode($profile['id']) ?>" class="btn btn-primary btn-sm">

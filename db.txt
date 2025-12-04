@@ -1,0 +1,4 @@
+new sql:
+table: profiles
+field: super_admin_logo 
+type: text
