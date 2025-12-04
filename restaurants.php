@@ -7,8 +7,8 @@ if (isset($_POST['send'])) {
 
     $imgUrl = singleImg('logo');
     $restaurant_name = $_POST['restaurant_name'];
-    $telegram_chat_id = $_POST['telegram_chat_id'];
-    $kitchen_receipt = $_POST['kitchen_receipt'];
+    $telegram_chat_id = $_POST['telegram_chat_id'] ?? 0;
+    $kitchen_receipt = $_POST['kitchen_receipt'] ?? 0;
     $customer_receipt = $_POST['customer_receipt'];
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -97,8 +97,8 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
         $logo = !empty(singleImg('logo')) ? singleImg('logo') : $logoUrl;
         $restaurant_name = $_POST['restaurant_name'];
         $telegram_chat_id = $_POST['telegram_chat_id'];
-        $kitchen_receipt = $_POST['kitchen_receipt'];
-        $customer_receipt = $_POST['customer_receipt'];
+        $kitchen_receipt = $_POST['kitchen_receipt'] ?? 0;
+        $customer_receipt = $_POST['customer_receipt'] ?? 0;
         $username = $_POST['username'];
         $password = $_POST['password'];
         $sale_date = $_POST['sale_date'];
@@ -405,11 +405,11 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
                                                 <div class="row">
                                                     <div class="col-md-6 mb-3">
                                                         <label for="customer_receipt" class="form-label">Müştəri Çeki Ölçüsü</label>
-                                                        <input type="text" class="form-control" id="customer_receipt" name="customer_receipt" placeholder="58mm" value="<?= $profiles['customer_receipt'] ?? '' ?>">
+                                                        <input type="text" class="form-control" id="customer_receipt" name="customer_receipt" placeholder="58mm" value="<?= $profiles['customer_receipt'] ?? 0 ?>">
                                                     </div>
                                                     <div class="col-md-6 mb-3">
                                                         <label for="kitchen_receipt" class="form-label">Mətbəx Çeki Ölçüsü</label>
-                                                        <input type="text" class="form-control" id="kitchen_receipt" name="kitchen_receipt" placeholder="80mm" value="<?= $profiles['kitchen_receipt'] ?? '' ?>">
+                                                        <input type="text" class="form-control" id="kitchen_receipt" name="kitchen_receipt" placeholder="80mm" value="<?= $profiles['kitchen_receipt'] ?? 0 ?>">
                                                     </div>
                                                 </div>
                                             </div>

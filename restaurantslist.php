@@ -440,7 +440,7 @@ if (isset($_GET['d']) && $_GET['d'] !== '') {
                       <td><?= $profile['id'] ?></td>
                       <?php if($profile['logo'] !== ''): ?>
                       <td>
-                        <img src="../<?= $profile['logo'] ?>" alt="" width="70px" height="70px"> 
+                        <img src="./<?= $profile['logo'] ?>" alt="" width="70px" height="70px"> 
                       </td>
                       <?php else: ?>
                       <td></td>
