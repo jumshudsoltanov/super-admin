@@ -33,6 +33,7 @@ $menuUrl = "https://qr.tamteam.net/?r=" . $profile['username'];
   <?php require_once './includes/head.php' ?>
   <!-- QR Code Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
     .qr-container {
         display: flex;
@@ -133,14 +134,17 @@ $menuUrl = "https://qr.tamteam.net/?r=" . $profile['username'];
                 
                 <div class="qr-wrapper">
                     <div id="qrcode"></div>
-                    <?php if($profile['logo'] !== ''): ?>
-                        <img src="../<?= $profile['logo'] ?>" class="qr-logo-overlay" alt="Logo">
+                    <?php if (!empty($profile['super_admin_logo'])): ?>
+                        <img src="./<?= htmlspecialchars($profile['super_admin_logo']) ?>" class="qr-logo-overlay" alt="Logo">
                     <?php endif; ?>
                 </div>
                 
                 <p class="text-muted mt-3 text-center small"><?= $menuUrl ?></p>
 
                 <div class="mt-4 d-flex gap-2 no-print">
+                    <button onclick="downloadQR()" class="btn btn-success rounded-pill px-4 fw-bold">
+                        <i class="bi bi-download me-2"></i> Yüklə
+                    </button>
                     <button onclick="window.print()" class="print-btn">
                         <i class="bi bi-printer me-2"></i> Çap Et
                     </button>
@@ -166,6 +170,16 @@ $menuUrl = "https://qr.tamteam.net/?r=" . $profile['username'];
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
     });
+
+    function downloadQR() {
+        const qrWrapper = document.querySelector('.qr-wrapper');
+        html2canvas(qrWrapper).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'qr-code-<?= htmlspecialchars($profile['restaurant_name']) ?>.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    }
   </script>
 
 </body>
