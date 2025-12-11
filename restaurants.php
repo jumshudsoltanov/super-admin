@@ -95,7 +95,8 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
 
     if (isset($_POST['update'])) {
 
-        $super_admin_logo = !empty(singleImg('super_admin_logo')) ? singleImg('super_admin_logo') : $logoUrl;
+        $new_uploaded_logo = singleImg('super_admin_logo');
+        $super_admin_logo = !empty($new_uploaded_logo) ? $new_uploaded_logo : $logoUrl;
         $restaurant_name = $_POST['restaurant_name'];
         $telegram_chat_id = $_POST['telegram_chat_id'];
         $kitchen_receipt = $_POST['kitchen_receipt'] ?? 0;
