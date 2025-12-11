@@ -36,6 +36,7 @@ if (isset($_POST['send'])) {
     $is_menu_block = $_POST['is_menu_block'] ?? 0;
     $is_scroll = $_POST['is_scroll'] ?? 0;
     $is_timer = $_POST['is_timer'] ?? 0;
+    $is_master_slave_active = $_POST['is_master_slave_active'] ?? 0;
 
     $terminal_id = $_POST['terminal_id'] ?? [];
     $terminal_password = $_POST['terminal_code'] ?? [];
@@ -55,7 +56,7 @@ if (isset($_POST['send'])) {
     `production_name`, `production_phone_number`, `region`, `start_time`, `end_time`,
     `is_contract`, `is_working`, `is_pos`, `is_menu`, `is_tax`, 
     `is_telegram_notify`, `is_whatsapp_notify`, `is_pos_block`, `is_menu_block`,
-    `tax_percent`, `tax_merchant`, `tax_type`, `ip_addr`, `port_addr`, `tax_cash_type`, `is_scroll`, `is_timer`
+    `tax_percent`, `tax_merchant`, `tax_type`, `ip_addr`, `port_addr`, `tax_cash_type`, `is_scroll`, `is_timer`, `is_master_slave_active`
 ) VALUES (
     '$imgUrl','$restaurant_name', '$telegram_chat_id', '$kitchen_receipt', '$customer_receipt', '$username','$password','$sale_date','$sale_type',
     '$payment','$next_payment_date','$boss_name','$boss_phone_number',
@@ -63,7 +64,7 @@ if (isset($_POST['send'])) {
     '$start_time', '$end_time',
     '$is_contract','$is_working','$is_pos','$is_menu','$is_tax',
     '$is_telegram_notify','$is_whatsapp_notify','$is_pos_block','$is_menu_block',
-    '$tax_percent','$tax_merchant','$tax_type','$ip_addr','$port_addr','$tax_cash_type', '$is_scroll', '$is_timer'
+    '$tax_percent','$tax_merchant','$tax_type','$ip_addr','$port_addr','$tax_cash_type', '$is_scroll', '$is_timer', '$is_master_slave_active'
 )");
 
     $lastId = $conn->insert_id;
@@ -124,6 +125,7 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
         $is_menu_block = $_POST['is_menu_block'] ?? 0;
         $is_scroll = $_POST['is_scroll'] ?? 0;
         $is_timer = $_POST['is_timer'] ?? 0;
+        $is_master_slave_active = $_POST['is_master_slave_active'] ?? 0;
 
         $terminal_id = $_POST['terminal_id'] ?? [];
         $terminal_password = $_POST['terminal_code'] ?? [];
@@ -172,7 +174,8 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
         `ip_addr` = '$ip_addr',
         `port_addr` = '$port_addr',
         `is_scroll` = '$is_scroll',
-        `is_timer` = '$is_timer'
+        `is_timer` = '$is_timer',
+        `is_master_slave_active` = '$is_master_slave_active'
     WHERE id = '$id'");
 
         sql("DELETE FROM terminal_groups WHERE profile_id='$id' ");
@@ -309,7 +312,7 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
                                         <div class="row mt-3">
                                             <div class="col-md-12 mb-3">
                                                 <label for="logo" class="form-label">Müəsissə Loqosu</label>
-                                                <input type="file" class="form-control" id="logo" name="logo">
+                                                <input type="file" class="form-control" id="logo" name="super_admin_logo">
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="restaurant_name" class="form-label">Müəsissə Adı</label>
@@ -339,9 +342,9 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
                                             <div class="col-md-6 mb-3">
                                                 <label for="sale_type" class="form-label">Satış Növü</label>
                                                 <select class="form-select" id="sale_type" name="sale_type">
-                                                    <option value="">-- Birini Seçin --</option>
-                                                    <option value="İllik" <?= (($profiles['sale_type'] ?? '') == 'İllik') ? 'selected' : '' ?>>İllik</option>
-                                                    <option value="Aylıq" <?= (($profiles['sale_type'] ?? '') == 'Aylıq') ? 'selected' : '' ?>>Aylıq</option>
+                                                    <option value="0">-- Birini Seçin --</option>
+                                                    <option value="1" <?= (($profiles['sale_type'] ?? '') == '1') ? 'selected' : '' ?>>İllik</option>
+                                                    <option value="2" <?= (($profiles['sale_type'] ?? '') == '2') ? 'selected' : '' ?>>Aylıq</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-6 mb-3">
@@ -497,7 +500,10 @@ if (isset($_GET['e']) && !empty($_GET['e'])) {
                                                         <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_menu_block" name="is_menu_block" value="1" <?= (isset($profiles['is_menu_block']) && $profiles['is_menu_block'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_menu_block">Menyu Blok?</label></div>
                                                     </div>
                                                      <div class="col-md-6 mb-3">
-                                                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_timer" name="is_timer" value="1" <?= (isset($profiles['is_timer']) && $profiles['is_timer'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_tax">Timer Aktivdir?</label></div>
+                                                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_timer" name="is_timer" value="1" <?= (isset($profiles['is_timer']) && $profiles['is_timer'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_timer">Timer Aktivdir?</label></div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_master_slave_active" name="is_master_slave_active" value="1" <?= (isset($profiles['is_master_slave_active']) && $profiles['is_master_slave_active'] === '1') ? 'checked' : '' ?>><label class="form-check-label" for="is_master_slave_active">Master Slave Mod Aktiv?</label></div>
                                                     </div>
                                                 </div>
                                             </div>
